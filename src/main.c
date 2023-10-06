@@ -1,16 +1,19 @@
 
+#include "stored_file.h"
 #include <stdio.h>
-
-#include "error.h"
 
 int
 main ( int ac, char **av)
 {
-    (void)av;
     if (ac != 2)
     {
-        show_usage("invalid number of argument.");
+        fprintf(stderr, "Error: invalid argument.\n");
+        fprintf(stderr, "Usage: woody <ELF_file>\n");
         return (1);
     }
+    
+    STORED_FILE * sf = sfopen(av[1], SF_READ);
+    sf_display_data(sf);
+    sfclose(sf);
     return (0);
 }

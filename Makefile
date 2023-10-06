@@ -1,7 +1,8 @@
 NAME	:=	woody
 
 SRCS	= 	main.c \
-			error.c
+			stored_file.c
+
 
 OBJS	=	$(addprefix ${OBJDIR}/,${SRCS:.c=.o})
 DEPENDS =	$(addprefix ${DEPSDIR}/,${SRCS:.c=.d})
@@ -11,6 +12,10 @@ INCS	=	-I ./src -I ./inc
 OBJDIR 	=	.objs
 DEPSDIR =	.deps
 SRCDIR 	= 	./src
+
+ifeq ($(DEBUG),on)
+	FLAGS += -D COMPILATION_DEBUG
+endif
 
 _GREY=	$'\033[30m
 _RED=	$'\033[31m
