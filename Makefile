@@ -1,14 +1,15 @@
 NAME	:=	woody
 
 SRCS	= 	main.c \
-			stored_file.c
+			stored_file.c \
+			validate.c
 
 
 OBJS	=	$(addprefix ${OBJDIR}/,${SRCS:.c=.o})
 DEPENDS =	$(addprefix ${DEPSDIR}/,${SRCS:.c=.d})
 CC		=	clang
-FLAGS	=	-g3 -fsanitize=address -Wall -Wextra -Werror -Wimplicit-function-declaration -Wtrigraphs 
-INCS	=	-I ./src -I ./inc
+FLAGS	=	-g3 -fsanitize=address -Wall -Wextra -Werror -Wimplicit-function-declaration -Wtrigraphs -m64
+INCS	=	-I ./src -I ./lib
 OBJDIR 	=	.objs
 DEPSDIR =	.deps
 SRCDIR 	= 	./src

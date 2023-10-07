@@ -18,12 +18,9 @@
  * TODO : sfopen must be able to write new file.
  * */
 
-/*
- * Open file and use memory mapped file method to store it inside STORED_FILE struct.
- * */
 STORED_FILE *
-sfopen (const char * file,
-        const int    flags)
+sfopen (const char *    file,
+        const int32_t   flags)
 {
     STORED_FILE sfile = {};
 
@@ -35,7 +32,7 @@ sfopen (const char * file,
     }
 
     sfile._flags = SF_OPEN;
-    sfile.size = lseek(sfile.fd, SEEK_END, SEEK_DATA);    
+    sfile.size = lseek(sfile.fd, 0, SEEK_END);    
     if (sfile.size < 0) {
         perror("lseek()");
         goto err;
@@ -66,15 +63,12 @@ err:
     return (NULL);
 }
 
-/*
- * Close file and destroy the structure.
- * */
-int
+int32_t
 sfclose (STORED_FILE* sf)
 {
-    int r = 0;
+    int32_t r = 0;
     if (sf->_flags != SF_OPEN)
-        fprintf(stderr, "sfclose(): cannot close file \'%s\'", sf->_name);
+        fprintf(stderr, "sfclose(): cannot close file \'%s\'\n", sf->_name);
 
     r |= munmap(sf->ptr, sf->size);
     if (r < 0)
@@ -88,22 +82,20 @@ sfclose (STORED_FILE* sf)
     return (!!r);
 }
 
-/*
- * Return pointer to the offset
- * */
 void *
 sfat (const STORED_FILE *   sf,
       const off_t           offset,
       const size_t          len)
 {
     if (offset + len >= sf->size) {
-        fprintf(stderr, "sfat(): Failed because you re trying to reach a range of file bigger than the file");
+        write(STDERR_FILENO, "sfat(): Failed because you re trying to reach a range of file bigger than the file.\n", 84);
         return (NULL);
     }
     return (sf->ptr + offset);
 }
 
 #ifdef COMPILATION_DEBUG
+
 void
 sf_display_data (const STORED_FILE * sf)
 {
