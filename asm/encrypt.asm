@@ -8,7 +8,7 @@ section .data
     text db "This is a text", 0
     text_len equ $-text
 
-    key db "This is a password", 0
+    key db "This is a password"
     key_len equ $-key
 
 section .text
@@ -21,7 +21,7 @@ _start:
     ; Initialize _start function
     push r8
     push r9
-    push r11
+    push r10
     push rbp
     mov rbp, rsp
     sub rsp, S_LEN + 0x10
@@ -39,6 +39,7 @@ _start:
     xor r9, r9
 
     .ksa:
+    ; [j = (j + S[i] + key[i % key_len]) % S_LEN]
     movzx rcx, byte [rsp + r8]
     add r9, rcx
     mov rax, r8
@@ -46,17 +47,17 @@ _start:
     xor rdx, rdx
     div ecx
     mov rdi, key
-    add rdi, rax 
-    movzx eax, byte [rdi]
+    add rdi, rdx 
+    movzx rax, byte [rdi]
     add r9, rax
 
     mov rax, r9
     xor rdx, rdx
     mov ecx, S_LEN
     div ecx
-    mov r9, rax
+    mov r9, rdx
 
-    ; Swap
+    ; [swap(S[i], S[j])]
     mov al, [rsp + r8]
     mov cl, [rsp + r9]
     mov [rsp + r9], al
@@ -65,6 +66,52 @@ _start:
     inc r8
     cmp r8, S_LEN
     jne .ksa
+
+    ; Pseudo-random generation algorithm (PRGA)
+    xor r8, r8
+    xor r9, r9
+    xor r10, r10
+
+    .prga:
+    ; [i = (i + 1) % S_LEN]
+    inc r8
+    mov rax, r8
+    mov ecx, S_LEN
+    xor rdx, rdx
+    div ecx
+    mov r8, rdx
+
+    ; [j = (j + S[i]) % N]
+    mov dl, [rsp + r8]
+    add r9, rdx
+    mov rax, r9
+    mov ecx, S_LEN
+    xor rdx, rdx
+    div ecx
+    mov r9, rdx
+
+    ; [swap(S[%r8], S[%r9])]
+    mov al, [rsp + r8]
+    mov cl, [rsp + r9]
+    mov [rsp + r9], al
+    mov [rsp + r8], cl
+
+    ; [int %rdx = S[(S[%r8] + S[%r9]) % S_LEN]]
+    xor rax, rax
+    mov al, [rsp + r8]
+    add eax, [rsp + r9]
+    ;mov ecx, S_LEN
+    ;xor rdx, rdx
+    ;div ecx
+    ;mov rdx, [rsp + rax]
+
+
+
+
+
+
+
+
 
 _end:
 
@@ -78,7 +125,7 @@ _end:
     ; Pop saved registers
     pop r8
     pop r9
-    pop r11
+    pop r10
     pop rbp
     add rsp, S_LEN + 0x10
     mov al, SYS_EXIT
