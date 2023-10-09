@@ -9,7 +9,7 @@
 static inline int32_t
 _is_magic_number_valid (uint8_t * e_ident)
 {
-    if (memcmp(e_ident, (uint8_t[4]){EI_MAG0, EI_MAG1, EI_MAG2, EI_MAG3}, 4)) {
+    if (memcmp(e_ident, (uint8_t[4]){0x7f, 0x45, 0x4c, 0x46}, 4)) {
         write(STDERR_FILENO, "_is_magic_number_valid(): invalid magic number.", 47);
         return (1);
     }

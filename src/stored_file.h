@@ -2,8 +2,7 @@
 #define STORED_FILE_H
 
 #include <stdio.h>
-#include <sys/_types/_int32_t.h>
-#include <sys/cdefs.h>
+#include <stdint.h>
 
 enum {
     SF_UNUSED = 1 << 0x0,
@@ -125,7 +124,7 @@ sf_display_data (const STORED_FILE *);
 #else
 
 static __inline void
-sf_display_data (__unused const STORED_FILE * sf) {}
+sf_display_data (__attribute__((__unused__)) const STORED_FILE * sf) {}
 
 #endif /* COMPOLATION_DEBUG */
 

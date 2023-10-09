@@ -6,8 +6,6 @@
 #include <fcntl.h>
 #include <stdio.h>
 #include <string.h>
-#include <sys/_types/_off_t.h>
-#include <sys/_types/_seek_set.h>
 #include <unistd.h>
 #include <sys/mman.h>
 #include <stdlib.h>

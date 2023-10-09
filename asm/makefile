@@ -1,27 +1,11 @@
 NAME	:=	woody
 
-SRCS	= 	main.c \
-			stored_file.c \
-			validate.c
+SRCS_ASM = 	encrypt.asm
 
-SRCS_ASM = 	keygen.asm
-
-OBJS	=	$(addprefix ${OBJDIR}/,${SRCS:.c=.o})
 OBJS_ASM    =  $(addprefix ${OBJDIR}/,${SRCS_ASM:.asm=.o})
 
-DEPENDS =	$(addprefix ${DEPSDIR}/,${SRCS:.c=.d})
-CC		=	clang
 ASMC    =   nasm
-FLAGS	=	-g3 -fsanitize=address -Wall -Wextra -Werror -Wimplicit-function-declaration -Wtrigraphs -m64
-INCS	=	-I ./src -I ./lib
 OBJDIR 	=	.objs
-DEPSDIR =	.deps
-SRCDIR 	= 	./src
-ASMDIR  =   ./asm
-
-ifeq ($(DEBUG),on)
-	FLAGS += -D COMPILATION_DEBUG
-endif
 
 _GREY=	$'\033[30m
 _RED=	$'\033[31m
@@ -35,32 +19,21 @@ _END= $'\033[37m
 
 all:		${NAME}
 
-
--include ${DEPENDS}
-$(OBJDIR)/%.o: ${SRCDIR}/%.c
-	@mkdir -p ${OBJDIR}
-	@printf "%-15s ${_YELLOW}${_BOLD}$<${_END}...\n" "Compiling"
-	@${CC} ${FLAGS} -MMD -MP ${INCS} -c $< -o $@
-	@mv ${OBJDIR}/$*.d ${DEPSDIR}/$*.d
-
-$(OBJDIR)/%.o: ${ASMDIR}/%.asm
+$(OBJDIR)/%.o: %.asm
 	@mkdir -p ${OBJDIR}
 	@printf "%-15s ${_CYAN}${_BOLD}$<${_END}...\n" "Compiling"
 	@${ASMC} -f elf64 $< -o $@
 
-${NAME}:	init ${OBJS} ${OBJS_ASM}
+${NAME}:	init ${OBJS_ASM}
 	@printf "%-15s ${_PURPLE}${_BOLD}${NAME}${_END}...\n" "Compiling"
-	@${CC} ${FLAGS} ${INCS} -o ${NAME} ${OBJS} ${OBJS_ASM} -no-pie
+	@ld -o ${NAME} ${OBJS_ASM}
 	@printf "\n${_GREEN}${_BOLD}Compilation done !${_END}\n"
 
 clean:		
 	@printf "%-15s ${_RED}${_BOLD}${NAME}'s object files${_END}...\n" "Deleting"
-	@rm -f ${OBJS} ${OBJS_BONUS}
+	@rm -f ${OBJS}
 	@printf "%-15s ${_RED}${_BOLD}${NAME}'s object directory${_END}...\n" "Deleting"
 	@rm -rf ${OBJDIR}
-	@printf "%-15s ${_RED}${_BOLD}${NAME}'s dependency files${_END}...\n" "Deleting"
-	@rm -rf ${DEPSDIR}
-
 
 fclean:		clean
 	@printf "%-15s ${_RED}${_BOLD}${NAME}${_END}...\n" "Deleting"
@@ -69,7 +42,6 @@ fclean:		clean
 init:
 	@printf "%-15s ${_GREEN}${_BOLD}${NAME}${_END}...\n" "Initiating"
 	@mkdir -p ${OBJDIR}
-	@mkdir -p ${DEPSDIR}
 
 show:
 	@echo "Project configfuration:"
