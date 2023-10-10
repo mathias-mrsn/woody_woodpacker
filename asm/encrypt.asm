@@ -4,27 +4,30 @@ BITS 64
 %define SYS_EXIT 0x3c
 %define SYS_WRITE 0x01
 
-section .data
-    text db "This is a text", 0
-    text_len equ $-text
-
-    key db "This is a password"
-    key_len equ $-key
-
 section .text
-    global _start
+    global encrypt
 
-; RSP = S array
-; r8 = index
-_start:
+encrypt:
 
     ; Initialize _start function
-    push r8
     push r9
-    push r10
+    push rdi
+    push rsi
+    push rdx
+    push rcx
+    push r8
+
     push rbp
     mov rbp, rsp
     sub rsp, S_LEN + 0x10
+
+    ; RBP:
+    ; + 0x0 - 0x8 : Old RBP
+    ; + 0x8 - 0x10 : Cipher address
+    ; + 0x10 - 0x18 : Key length
+    ; + 0x18 - 0x20 : Key address
+    ; + 0x20 - 0x28 : Plain text length
+    ; + 0x28 - 0x30 : Plain text address
 
     ; Initialize S array (S[i] = i)
     xor r8, r8
@@ -43,10 +46,10 @@ _start:
     movzx rcx, byte [rsp + r8]
     add r9, rcx
     mov rax, r8
-    mov ecx, key_len 
+    mov ecx, [rbp + 0x10] 
     xor rdx, rdx
     div ecx
-    mov rdi, key
+    mov rdi, [rbp + 0x18]
     add rdi, rdx 
     movzx rax, byte [rdi]
     add r9, rax
@@ -82,7 +85,7 @@ _start:
     mov r8, rdx
 
     ; [j = (j + S[i]) % N]
-    mov dl, [rsp + r8]
+    movzx rdx, byte [rsp + r8]
     add r9, rdx
     mov rax, r9
     mov ecx, S_LEN
@@ -96,40 +99,41 @@ _start:
     mov [rsp + r9], al
     mov [rsp + r8], cl
 
-    ; [int %rdx = S[(S[%r8] + S[%r9]) % S_LEN]]
-    xor rax, rax
-    mov al, [rsp + r8]
-    add eax, [rsp + r9]
-    ;mov ecx, S_LEN
-    ;xor rdx, rdx
-    ;div ecx
-    ;mov rdx, [rsp + rax]
+    ; [int %rax = S[(S[%r8] + S[%r9]) % S_LEN]]
+    movzx rax, byte [rsp + r8]
+    movzx rcx, byte [rsp + r9]
+    add rax, rcx
+    mov ecx, S_LEN
+    xor rdx, rdx
+    div ecx
+    movzx rax, byte [rsp + rdx]
 
+    ; [al = rax ^ text[r10]]
+    mov rdi, [rbp + 0x28]
+    add rdi, r10
+    movzx rdx, byte [rdi]
+    xor al, dl
+    
+    ; [cipher[n] = al]
+    mov rdi, [rbp + 0x8]
+    add rdi, r10
+    mov [rdi], al
 
-
-
-
-
-
-
+    inc r10
+    cmp r10, [rbp + 0x20]
+    jne .prga
 
 _end:
 
-   
-    ; mov rdx, S_LEN
-    ; mov rsi, rsp
-    ; mov rdi, 1
-    ; mov rax, SYS_WRITE
-    ; syscall
-
-    ; Pop saved registers
+    leave
     pop r8
+    pop rcx
+    pop rdx
+    pop rsi
+    pop rdi
     pop r9
-    pop r10
-    pop rbp
-    add rsp, S_LEN + 0x10
-    mov al, SYS_EXIT
-    syscall
+    ret
+
 
 
 

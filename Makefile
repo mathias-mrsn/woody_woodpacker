@@ -4,7 +4,8 @@ SRCS	= 	main.c \
 			stored_file.c \
 			validate.c
 
-SRCS_ASM = 	keygen.asm
+SRCS_ASM = 	keygen.asm \
+			encrypt.asm
 
 OBJS	=	$(addprefix ${OBJDIR}/,${SRCS:.c=.o})
 OBJS_ASM    =  $(addprefix ${OBJDIR}/,${SRCS_ASM:.asm=.o})
@@ -12,8 +13,8 @@ OBJS_ASM    =  $(addprefix ${OBJDIR}/,${SRCS_ASM:.asm=.o})
 DEPENDS =	$(addprefix ${DEPSDIR}/,${SRCS:.c=.d})
 CC		=	clang
 ASMC    =   nasm
-FLAGS	=	-g3 -fsanitize=address -Wall -Wextra -Werror -Wimplicit-function-declaration -Wtrigraphs -m64
-INCS	=	-I ./src -I ./lib
+FLAGS	=	#-g3 -fsanitize=address -Wall -Wextra -Werror -Wimplicit-function-declaration -Wtrigraphs -m64
+INCS	=	-I ./src -I ./asm
 OBJDIR 	=	.objs
 DEPSDIR =	.deps
 SRCDIR 	= 	./src
