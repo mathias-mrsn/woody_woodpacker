@@ -32,7 +32,6 @@ main ( int ac, char **av)
         goto _err;
     }
 
-//    encryption(sf, e_ident);
 
 
 _err:
