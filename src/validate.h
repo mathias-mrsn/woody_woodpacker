@@ -13,14 +13,12 @@
  *
  * @param sf A pointer to the STORED_FILE structure representing the file.
  *
- * @return A dynamically allocated uint8_t array containing the ELF header
- *         identifier on success, or NULL if validation fails or memory
- *         allocation fails.
+ * @return ERROR if check failed and SUCCESS otherwise.
  *
  * @note The caller is responsible for freeing the memory allocated for the
  *       returned identifier using free() when it's no longer needed.
  */
-uint8_t *
+uint32_t
 validate_ident (const STORED_FILE * sf);
 
 #endif

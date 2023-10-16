@@ -1,4 +1,5 @@
 BITS 64
+; ARCH INTEL x86_64
 
 %define S_LEN 0x100 ; 256
 %define SYS_EXIT 0x3c
@@ -133,9 +134,3 @@ _end:
     pop rdi
     pop r9
     ret
-
-
-
-
-
-
