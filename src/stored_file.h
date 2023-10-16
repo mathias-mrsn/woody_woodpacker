@@ -4,7 +4,8 @@
 #include <stdio.h>
 #include <stdint.h>
 
-enum {
+enum
+{
     SF_UNUSED = 1 << 0x0,
     SF_OPEN = 1 << 0x1,
     SF_CLOSE = 1 << 0x2,
@@ -21,13 +22,14 @@ enum {
  * the file's contents, including a pointer to the memory-mapped data, file
  * descriptor, size, filename, and open status.
  */
-typedef struct __sSTORED_FILE {
-    void*       ptr;         /**< Pointer to the memory-mapped data of the file. */
-    int32_t     fd;          /**< File descriptor associated with the file. */
-    size_t      size;        /**< Size of the stored file in bytes. */
+typedef struct __sSTORED_FILE
+{
+    void *ptr;   /**< Pointer to the memory-mapped data of the file. */
+    int32_t fd;  /**< File descriptor associated with the file. */
+    size_t size; /**< Size of the stored file in bytes. */
 
-    const char* _name;   /**< Name of the file, typically the file path. */
-    int32_t     _flags;      /**< Flags indicating the file's open status. */
+    const char *_name; /**< Name of the file, typically the file path. */
+    int32_t _flags;    /**< Flags indicating the file's open status. */
 } STORED_FILE;
 
 /*
@@ -49,8 +51,8 @@ typedef struct __sSTORED_FILE {
  *       using perror().
  */
 extern STORED_FILE *
-sfopen (const char *,
-        const int32_t);
+sfopen(const char *,
+       const int32_t);
 
 /**
  * @brief Close a stored file and release associated resources.
@@ -73,7 +75,7 @@ sfopen (const char *,
  *       resource leaks and memory mapping issues.
  */
 extern int
-sfclose (STORED_FILE*);
+sfclose(STORED_FILE *);
 
 /**
  * @brief Get a pointer to a specified range within a stored file.
@@ -100,9 +102,9 @@ sfclose (STORED_FILE*);
  *       file data.
  */
 extern void *
-sfat (const STORED_FILE *,
-      const off_t,
-      const size_t);
+sfat(const STORED_FILE *,
+     const off_t,
+     const size_t);
 
 #ifdef COMPILATION_DEBUG
 
@@ -119,12 +121,12 @@ sfat (const STORED_FILE *,
  *       for informational purposes only.
  */
 extern void
-sf_display_data (const STORED_FILE *);
+sf_display_data(const STORED_FILE *);
 
 #else
 
 static __inline void
-sf_display_data (__attribute__((__unused__)) const STORED_FILE * sf) {}
+sf_display_data(__attribute__((__unused__)) const STORED_FILE *sf) {}
 
 #endif /* COMPOLATION_DEBUG */
 
