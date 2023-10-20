@@ -4,6 +4,7 @@ SRCS	= 	main.c \
 			stored_file.c \
 			validate.c \
 			parse.c \
+			convert_headers.c \
 			exploit.c
 
 SRCS_ASM = 	keygen.asm \
