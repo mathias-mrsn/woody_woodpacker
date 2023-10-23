@@ -2,7 +2,8 @@ NAME	:=	woody
 
 SRCS	= 	main.c \
 			stored_file.c \
-			validate.c
+			validate.c \
+			unpacker.c
 
 SRCS_ASM = 	keygen.asm \
 			encrypt.asm
