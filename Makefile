@@ -5,7 +5,8 @@ SRCS	= 	main.c \
 			validate.c \
 			parse.c \
 			convert_headers.c \
-			exploit.c
+			exploit.c \
+			unpacker.c
 
 SRCS_ASM = 	keygen.asm \
 			encrypt.asm
