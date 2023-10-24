@@ -11,6 +11,10 @@
 
 int main(int ac, char **av)
 {
+    int b = 1;
+    int a = 2;
+    a = b += 9;
+    printf("a = %d\nb = %d\n", a, b);
     if (ac != 2)
     {
         write(2, "Error: invalid argument.\nUsage: woody <ELF_file>\n", 49);
@@ -32,7 +36,7 @@ int main(int ac, char **av)
         write(2, "validate_ident(): failed.", 25);
         goto _err;
     }
-    elf_exploit(sf, x32);
+    // elf_exploit(sf, x32);
 
 _err:
     sfclose(sf);
