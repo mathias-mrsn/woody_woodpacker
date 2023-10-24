@@ -39,29 +39,6 @@ void test(STORED_FILE *sf)
     e_h64->e_type = e_h->e_type;
     e_h64->e_version = e_h->e_version;
 
-    printf("32\n==========\nElf Header Entries:\n");
-    printf("Entry_p\tPH_Offset\t\n");
-    printf("%08x\t%x\n", e_h->e_entry, e_h->e_phoff);
-    printf("Program Header Entries:\n");
-    printf("==================================\n");
-    printf("Type\tOffset\t\tVirtAddr\tPhysAddr\tFileSiz\tMemSiz\tFlags\tAlign\n");
-
-    for (int i = 0; i < e_h->e_phnum; i++)
-    {
-        printf("%x\t%08x\t%016x\t%016x\t%08x\t%08x\t%x\t%x\n",
-               p_h[i].p_type, p_h[i].p_offset, p_h[i].p_vaddr,
-               p_h[i].p_paddr, p_h[i].p_filesz, p_h[i].p_memsz,
-               p_h[i].p_flags, p_h[i].p_align);
-        printf("%p\n", &(p_h[i]));
-    }
-
-    printf("64\n==========\nElf Header Entries:\n");
-    printf("Entry_p\tPH_Offset\t\n");
-    printf("%08lx\t%lx\n", e_h64->e_entry, e_h64->e_phoff);
-    printf("Program Header Entries:\n");
-    printf("==================================\n");
-    printf("Type\tOffset\t\tVirtAddr\tPhysAddr\tFileSiz\tMemSiz\tFlags\tAlign\n");
-
     for (int i = 0; i < e_h64->e_phnum; i++)
     {
         p_h64[i].p_align = p_h[i].p_align;
@@ -72,11 +49,6 @@ void test(STORED_FILE *sf)
         p_h64[i].p_paddr = p_h[i].p_paddr;
         p_h64[i].p_type = p_h[i].p_type;
         p_h64[i].p_vaddr = p_h[i].p_vaddr;
-        printf("%x\t%08lx\t%016lx\t%016lx\t%08x\t%08x\t%x\t%x\n",
-               p_h64[i].p_type, p_h64[i].p_offset, p_h64[i].p_vaddr,
-               p_h64[i].p_paddr, p_h64[i].p_filesz, p_h64[i].p_memsz,
-               p_h64[i].p_flags, p_h64[i].p_align);
-        printf("%p\n", &(p_h64[i]));
         // p_h64 = heap_alloc(-86, p_h64);
         // p_h = (Elf64_Phdr *)(char *)p_h + 24;
     }
@@ -95,13 +67,6 @@ void test(STORED_FILE *sf)
     e_h32->e_shstrndx = e_h64->e_shstrndx;
     e_h32->e_type = e_h64->e_type;
     e_h32->e_version = e_h64->e_version;
-    printf("32\n==========\nElf Header Entries:\n");
-    printf("Entry_p\tPH_Offset\t\n");
-    printf("%08x\t%x\n", e_h->e_entry, e_h->e_phoff);
-    printf("Program Header Entries:\n");
-    printf("==================================\n");
-    printf("Type\tOffset\t\tVirtAddr\tPhysAddr\tFileSiz\tMemSiz\tFlags\tAlign\n");
-
     for (int i = 0; i < e_h->e_phnum; i++)
     {
         p_h32[i].p_align = p_h64[i].p_align;
@@ -112,25 +77,6 @@ void test(STORED_FILE *sf)
         p_h32[i].p_paddr = p_h64[i].p_paddr;
         p_h32[i].p_type = p_h64[i].p_type;
         p_h32[i].p_vaddr = p_h64[i].p_vaddr;
-        printf("%x\t%08x\t%016x\t%016x\t%08x\t%08x\t%x\t%x\n",
-               p_h32[i].p_type, p_h32[i].p_offset, p_h32[i].p_vaddr,
-               p_h32[i].p_paddr, p_h32[i].p_filesz, p_h32[i].p_memsz,
-               p_h32[i].p_flags, p_h32[i].p_align);
-    }
-
-    printf("64\n==========\nElf Header Entries:\n");
-    printf("Entry_p\tPH_Offset\t\n");
-    printf("%08lx\t%lx\n", e_h64->e_entry, e_h64->e_phoff);
-    printf("Program Header Entries:\n");
-    printf("==================================\n");
-    printf("Type\tOffset\t\tVirtAddr\tPhysAddr\tFileSiz\tMemSiz\tFlags\tAlign\n");
-
-    for (int i = 0; i < e_h64->e_phnum; i++)
-    {
-        printf("%x\t%08lx\t%016lx\t%016lx\t%08lx\t%08lx\t%x\t%lx\n",
-               p_h64[i].p_type, p_h64[i].p_offset, p_h64[i].p_vaddr,
-               p_h64[i].p_paddr, p_h64[i].p_filesz, p_h64[i].p_memsz,
-               p_h64[i].p_flags, p_h64[i].p_align);
     }
 }
 
@@ -184,6 +130,7 @@ ELF32_FORMAT *convert64_32(ELF64_FORMAT *src)
 }
 ELF64_FORMAT *convert32_64(const ELF32_FORMAT *src)
 {
+    printf("filesz = %u\n", src->p_h[3].p_filesz);
     ELF64_FORMAT *dest;
     dest = malloc(sizeof(ELF64_FORMAT));
     dest->e_h = malloc(sizeof(Elf64_Ehdr));

@@ -14,9 +14,10 @@ OBJS	=	$(addprefix ${OBJDIR}/,${SRCS:.c=.o})
 OBJS_ASM    =  $(addprefix ${OBJDIR}/,${SRCS_ASM:.asm=.o})
 
 DEPENDS =	$(addprefix ${DEPSDIR}/,${SRCS:.c=.d})
-CC		=	gcc
-ASMC    =   as
-FLAGS	=	-g3 -fsanitize=address  -Wimplicit-function-declaration -Wtrigraphs -m64
+CC		=	clang
+#ASMC    =   /mnt/nfs/homes/xchalle/nasm-2.16.01/nasm
+ASMC    =   nasm
+FLAGS	=	-g3 -fsanitize=address -Wall -Werror -Wextra -Wimplicit-function-declaration -Wtrigraphs -m64
 INCS	=	-I ./src -I ./asm
 OBJDIR 	=	.objs
 DEPSDIR =	.deps
