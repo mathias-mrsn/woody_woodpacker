@@ -81,14 +81,6 @@ get_unpacker (  const void * old_start,
         memcpy((unpacker + RC4_UNPACKER_SIZE) - TEXT_LEN_REVERSE_OFFSET_64, &text_len, sizeof(uint64_t)); 
         memcpy((unpacker + RC4_UNPACKER_SIZE) - KEY_ADDR_REVERSE_OFFSET_64, &key, sizeof(void*));
         memcpy((unpacker + RC4_UNPACKER_SIZE) - KEY_LEN_REVERSE_OFFSET_64, &key_len, sizeof(uint64_t)); 
-
-        for(int i = 0; i < RC4_UNPACKER_SIZE; i++) {
-            if (i > 0 && i % 8 == 0) {
-                printf("\n");
-            }
-            printf("0x%02x ", unpacker[i]);
-        }
-        printf("\n");
     } else {}
 
 
