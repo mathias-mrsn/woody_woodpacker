@@ -5,6 +5,7 @@
 #include <unistd.h>
 
 #include "elf.h"
+#include "unpacker.h"
 #include "validate.h"
 #include "asm.h"
 
@@ -32,6 +33,7 @@ main ( int ac, char **av)
         goto _err;
     }
 
+    get_unpacker(0, 0, 0, 0, 0, 0);
 
 
 _err:
