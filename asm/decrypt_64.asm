@@ -6,9 +6,10 @@ BITS 64
 %define SYS_WRITE 0x01
 
 section .text
-    global _start
+    global decrypt_64
+    global decrypt_64_end
 
-_start:
+decrypt_64:
 
     ; Initialize _start function
     push rbp
@@ -117,19 +118,16 @@ _start:
 
 _end:
 
-    ; jmp old_start
     leave
-    mov al, SYS_EXIT
-    syscall
-
+    jmp old_start
 
 ; data
 woody           db "....WOODY...."
 woody_len       equ $-woody
 
-old_start       dq 0x00000000
-decrypt_addr    dq 0x00000000
-decrypt_len     dq 0x00000000
-key             dq 0x00000000
-key_len         dq 0x00000000
-
+old_start       dq 0x0000000000000000
+decrypt_addr    dq 0x0000000000000000
+decrypt_len     dq 0x0000000000000000
+key             dq 0x0000000000000000
+key_len         dq 0x0000000000000000
+decrypt_64_end:

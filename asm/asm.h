@@ -45,4 +45,16 @@ encrypt (const char * text,
              const size_t key_len,
              const char * cipher);
 
+extern void
+decrypt_64 (void);
+
+extern void
+decrypt_64_end (void);
+
+extern void
+decrypt_32 (void);
+
+extern void
+decrypt_32_end (void);
+
 #endif

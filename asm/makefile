@@ -1,6 +1,6 @@
-NAME	:=	woody
+NAME	:=	decrypt
 
-SRCS_ASM = 	encrypt.asm
+SRCS_ASM = 	decrypt.asm
 
 OBJS_ASM    =  $(addprefix ${OBJDIR}/,${SRCS_ASM:.asm=.o})
 

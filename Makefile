@@ -6,7 +6,9 @@ SRCS	= 	main.c \
 			unpacker.c
 
 SRCS_ASM = 	keygen.asm \
-			encrypt.asm
+			encrypt.asm \
+			decrypt_64.asm \
+			decrypt_32.asm
 
 OBJS	=	$(addprefix ${OBJDIR}/,${SRCS:.c=.o})
 OBJS_ASM    =  $(addprefix ${OBJDIR}/,${SRCS_ASM:.asm=.o})
