@@ -28,16 +28,26 @@ get_unpacker (  const void * old_start,
         memcpy((unpacker + UNPACKER_SIZE_64) - OLD_START_REVERSE_OFFSET_64, &old_start, QUAD_WORD); 
         memcpy((unpacker + UNPACKER_SIZE_64) - TEXT_ADDR_REVERSE_OFFSET_64, &text, QUAD_WORD); 
         memcpy((unpacker + UNPACKER_SIZE_64) - TEXT_LEN_REVERSE_OFFSET_64, &text_len, QUAD_WORD); 
-        memcpy((unpacker + UNPACKER_SIZE_64) - KEY_ADDR_REVERSE_OFFSET_64, &key, QUAD_WORD);
         memcpy((unpacker + UNPACKER_SIZE_64) - KEY_LEN_REVERSE_OFFSET_64, &key_len, QUAD_WORD); 
+        memcpy((unpacker + UNPACKER_SIZE_64) - KEY_ADDR_REVERSE_OFFSET_64, key, KEY_LENGTH / 8);
 
         // memcpy((&decrypt_64 + UNPACKER_SIZE_64) - OLD_START_REVERSE_OFFSET_64, &old_start, QUAD_WORD); 
         // memcpy((&decrypt_64 + UNPACKER_SIZE_64) - TEXT_ADDR_REVERSE_OFFSET_64, &text, QUAD_WORD); 
         // memcpy((&decrypt_64 + UNPACKER_SIZE_64) - TEXT_LEN_REVERSE_OFFSET_64, &text_len, QUAD_WORD); 
-        // memcpy((&decrypt_64 + UNPACKER_SIZE_64) - KEY_ADDR_REVERSE_OFFSET_64, &key, QUAD_WORD);
         // memcpy((&decrypt_64 + UNPACKER_SIZE_64) - KEY_LEN_REVERSE_OFFSET_64, &key_len, QUAD_WORD); 
+        // memcpy((&decrypt_64 + UNPACKER_SIZE_64) - KEY_ADDR_REVERSE_OFFSET_64, key, KEY_LENGTH / 8);
         //
         // decrypt_64();
+
+        // printf("-----------------------------");
+        // for(int i = 0; i < UNPACKER_SIZE_64; i++) {
+        //     if (i > 0 && i % 8 == 0) {
+        //         printf("\n");
+        //     }
+        //     printf("0x%02x ", unpacker[i]);
+        // }
+        // printf("-----------------------------\n");
+
     } else {
 
         unpacker = calloc(1, UNPACKER_SIZE_32 + 100);

@@ -42,7 +42,7 @@ decrypt_64:
     mov rcx, [key_len]
     xor rdx, rdx
     div rcx
-    mov rdi, [key]
+    mov rdi, key
     add rdi, rdx 
     movzx rax, byte [rdi]
     add r9, rax
@@ -120,9 +120,7 @@ _end:
 
     leave
     jmp [old_start]
-    ; mov rdi, 2
-    ; mov rax, SYS_EXIT
-    ; syscall
+    ; ret
 
 ; data
 woody           db "....WOODY....", 10
@@ -131,6 +129,6 @@ woody_len       equ $-woody
 old_start       dq 0x0000000000000000
 decrypt_addr    dq 0x0000000000000000
 decrypt_len     dq 0x0000000000000000
-key             dq 0x0000000000000000
 key_len         dq 0x0000000000000000
+key             times 32 db 0x0
 decrypt_64_end:
