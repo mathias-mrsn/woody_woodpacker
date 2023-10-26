@@ -32,7 +32,7 @@ int main(int ac, char **av)
         write(2, "validate_ident(): failed.", 25);
         goto _err;
     }
-    elf_exploit(sf, x32);
+    elf_exploit(sf);
 
 _err:
     sfclose(sf);
