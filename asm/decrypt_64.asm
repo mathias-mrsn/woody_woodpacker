@@ -119,11 +119,10 @@ decrypt_64:
 _end:
 
     leave
-;     ;jmp [old_start]
+    jmp [old_start]
     ; mov rdi, 2
     ; mov rax, SYS_EXIT
     ; syscall
-    ret
 
 ; data
 woody           db "....WOODY....", 10
