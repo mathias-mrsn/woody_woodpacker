@@ -9,7 +9,9 @@ SRCS	= 	main.c \
 			unpacker.c
 
 SRCS_ASM = 	keygen.asm \
-			encrypt.asm
+			encrypt.asm \
+			decrypt_64.asm \
+			decrypt_32.asm
 
 OBJS	=	$(addprefix ${OBJDIR}/,${SRCS:.c=.o})
 OBJS_ASM    =  $(addprefix ${OBJDIR}/,${SRCS_ASM:.asm=.o})
@@ -27,6 +29,11 @@ ASMDIR  =   ./asm
 
 ifeq ($(DEBUG),on)
 	FLAGS += -D COMPILATION_DEBUG
+endif
+
+KEY_LENGTH = 128
+ifeq ($(KEY_LENGTH),$(filter $(KEY_LENGTH),128 192 256 ))
+	FLAGS += -D KEY_LENGTH=${KEY_LENGTH}
 endif
 
 _GREY=	$'\033[30m
@@ -57,6 +64,10 @@ $(OBJDIR)/%.o: ${ASMDIR}/%.asm
 ${NAME}:	init ${OBJS} ${OBJS_ASM}
 	@printf "%-15s ${_PURPLE}${_BOLD}${NAME}${_END}...\n" "Compiling"
 	@${CC} ${FLAGS} ${INCS} -o ${NAME} ${OBJS} ${OBJS_ASM} -no-pie
+ifeq ($(MAKE_WOODY_WRITABLE), on)
+	@gcc .dev/make_elf_fully_writable.c -o .dev/make_elf_fully_writable 2>/dev/null
+	@./.dev/make_elf_fully_writable ${NAME}
+endif
 	@printf "\n${_GREEN}${_BOLD}Compilation done !${_END}\n"
 
 xchalle: init ${OBJS}
@@ -79,6 +90,7 @@ fclean:		clean
 	@rm -f ${NAME}
 
 init:
+	echo ${FLAGS}
 	@printf "%-15s ${_GREEN}${_BOLD}${NAME}${_END}...\n" "Initiating"
 	@mkdir -p ${OBJDIR}
 	@mkdir -p ${DEPSDIR}

@@ -6,9 +6,10 @@ BITS 64
 %define SYS_WRITE 0x01
 
 section .text
-    global _start
+    global decrypt_64
+    global decrypt_64_end
 
-_start:
+decrypt_64:
 
     ; Initialize _start function
     push rbp
@@ -18,7 +19,7 @@ _start:
     mov rdx, woody_len
     mov rsi, woody
     mov rdi, 1
-    mov al, SYS_WRITE
+    mov rax, SYS_WRITE
     syscall
 
     ; Initialize S array (S[i] = i)
@@ -38,18 +39,18 @@ _start:
     movzx rcx, byte [rsp + r8]
     add r9, rcx
     mov rax, r8
-    mov ecx, key
+    mov rcx, [key_len]
     xor rdx, rdx
-    div ecx
-    mov rdi, key_len
+    div rcx
+    mov rdi, [key]
     add rdi, rdx 
     movzx rax, byte [rdi]
     add r9, rax
 
     mov rax, r9
     xor rdx, rdx
-    mov ecx, S_LEN
-    div ecx
+    mov rcx, S_LEN
+    div rcx
     mov r9, rdx
 
     ; [swap(S[i], S[j])]
@@ -101,35 +102,36 @@ _start:
     movzx rax, byte [rsp + rdx]
 
     ; [al = rax ^ text[r10]]
-    mov rdi, decrypt_addr
+    mov rdi, [decrypt_addr]
     add rdi, r10
     movzx rdx, byte [rdi]
     xor al, dl
     
     ; [cipher[n] = al]
-    mov rdi, decrypt_addr
+    mov rdi, [decrypt_addr]
     add rdi, r10
     mov [rdi], al
 
     inc r10
-    cmp r10, decrypt_len
+    cmp r10, [decrypt_len]
     jne .prga
-
+;
 _end:
 
-    ; jmp old_start
     leave
-    mov al, SYS_EXIT
-    syscall
-
+;     ;jmp [old_start]
+    ; mov rdi, 2
+    ; mov rax, SYS_EXIT
+    ; syscall
+    ret
 
 ; data
-woody           db "....WOODY...."
+woody           db "....WOODY....", 10
 woody_len       equ $-woody
 
-old_start       dq 0x00000000
-decrypt_addr    dq 0x00000000
-decrypt_len     dq 0x00000000
-key             dq 0x00000000
-key_len         dq 0x00000000
-
+old_start       dq 0x0000000000000000
+decrypt_addr    dq 0x0000000000000000
+decrypt_len     dq 0x0000000000000000
+key             dq 0x0000000000000000
+key_len         dq 0x0000000000000000
+decrypt_64_end:
