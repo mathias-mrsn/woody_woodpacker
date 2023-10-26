@@ -80,7 +80,6 @@ fclean:		clean
 	@rm -f ${NAME}
 
 init:
-	echo ${FLAGS}
 	@printf "%-15s ${_GREEN}${_BOLD}${NAME}${_END}...\n" "Initiating"
 	@mkdir -p ${OBJDIR}
 	@mkdir -p ${DEPSDIR}
