@@ -27,6 +27,11 @@ ifeq ($(DEBUG),on)
 	FLAGS += -D COMPILATION_DEBUG
 endif
 
+KEY_LENGTH = 128
+ifeq ($(KEY_LENGTH),$(filter $(KEY_LENGTH),128 192 256 ))
+	FLAGS += -D KEY_LENGTH=${KEY_LENGTH}
+endif
+
 _GREY=	$'\033[30m
 _RED=	$'\033[31m
 _GREEN=	$'\033[32m
@@ -55,6 +60,10 @@ $(OBJDIR)/%.o: ${ASMDIR}/%.asm
 ${NAME}:	init ${OBJS} ${OBJS_ASM}
 	@printf "%-15s ${_PURPLE}${_BOLD}${NAME}${_END}...\n" "Compiling"
 	@${CC} ${FLAGS} ${INCS} -o ${NAME} ${OBJS} ${OBJS_ASM} -no-pie
+ifeq ($(MAKE_WOODY_WRITABLE), on)
+	@gcc .dev/make_elf_fully_writable.c -o .dev/make_elf_fully_writable 2>/dev/null
+	@./.dev/make_elf_fully_writable ${NAME}
+endif
 	@printf "\n${_GREEN}${_BOLD}Compilation done !${_END}\n"
 
 clean:		
@@ -71,6 +80,7 @@ fclean:		clean
 	@rm -f ${NAME}
 
 init:
+	echo ${FLAGS}
 	@printf "%-15s ${_GREEN}${_BOLD}${NAME}${_END}...\n" "Initiating"
 	@mkdir -p ${OBJDIR}
 	@mkdir -p ${DEPSDIR}

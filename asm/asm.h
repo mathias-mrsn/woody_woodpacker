@@ -45,6 +45,10 @@ encrypt (const char * text,
              const size_t key_len,
              const char * cipher);
 
+/**
+ * @brief Those declarations are only used to get the addresses of the beginning
+ * and the end for each payload.
+ */
 extern void
 decrypt_64 (void);
 

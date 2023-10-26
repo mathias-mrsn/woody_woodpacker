@@ -19,7 +19,7 @@ decrypt_64:
     mov rdx, woody_len
     mov rsi, woody
     mov rdi, 1
-    mov al, SYS_WRITE
+    mov rax, SYS_WRITE
     syscall
 
     ; Initialize S array (S[i] = i)
@@ -39,18 +39,18 @@ decrypt_64:
     movzx rcx, byte [rsp + r8]
     add r9, rcx
     mov rax, r8
-    mov ecx, key
+    mov rcx, [key_len]
     xor rdx, rdx
-    div ecx
-    mov rdi, key_len
+    div rcx
+    mov rdi, [key]
     add rdi, rdx 
     movzx rax, byte [rdi]
     add r9, rax
 
     mov rax, r9
     xor rdx, rdx
-    mov ecx, S_LEN
-    div ecx
+    mov rcx, S_LEN
+    div rcx
     mov r9, rdx
 
     ; [swap(S[i], S[j])]
@@ -102,27 +102,31 @@ decrypt_64:
     movzx rax, byte [rsp + rdx]
 
     ; [al = rax ^ text[r10]]
-    mov rdi, decrypt_addr
+    mov rdi, [decrypt_addr]
     add rdi, r10
     movzx rdx, byte [rdi]
     xor al, dl
     
     ; [cipher[n] = al]
-    mov rdi, decrypt_addr
+    mov rdi, [decrypt_addr]
     add rdi, r10
     mov [rdi], al
 
     inc r10
-    cmp r10, decrypt_len
+    cmp r10, [decrypt_len]
     jne .prga
-
+;
 _end:
 
     leave
-    jmp old_start
+;     ;jmp [old_start]
+    ; mov rdi, 2
+    ; mov rax, SYS_EXIT
+    ; syscall
+    ret
 
 ; data
-woody           db "....WOODY...."
+woody           db "....WOODY....", 10
 woody_len       equ $-woody
 
 old_start       dq 0x0000000000000000
