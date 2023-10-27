@@ -3,6 +3,9 @@ NAME	:=	woody
 SRCS	= 	main.c \
 			stored_file.c \
 			validate.c \
+			parse.c \
+			convert_headers.c \
+			exploit.c \
 			unpacker.c
 
 SRCS_ASM = 	keygen_64.asm \
@@ -15,6 +18,7 @@ OBJS_ASM    =  $(addprefix ${OBJDIR}/,${SRCS_ASM:.asm=.o})
 
 DEPENDS =	$(addprefix ${DEPSDIR}/,${SRCS:.c=.d})
 CC		=	clang
+#ASMC    =   /mnt/nfs/homes/xchalle/nasm-2.16.01/nasm
 ASMC    =   nasm
 FLAGS	=	-g3 -fsanitize=address #-Wall -Wextra -Werror -Wimplicit-function-declaration -Wtrigraphs -m64
 INCS	=	-I ./src -I ./asm
@@ -69,6 +73,12 @@ ifeq ($(MAKE_WOODY_WRITABLE), on)
 	@./.dev/make_elf_fully_writable ${NAME}
 endif
 	@printf "\n${_GREEN}${_BOLD}Compilation done !${_END}\n"
+
+xchalle: init ${OBJS}
+	@${CC} ${FLAGS} ${INCS} -o ${NAME} ${OBJS} -no-pie
+	@printf "\n${_GREEN}${_BOLD}Compilation done !${_END}\n"
+
+
 
 clean:		
 	@printf "%-15s ${_RED}${_BOLD}${NAME}'s object files${_END}...\n" "Deleting"
