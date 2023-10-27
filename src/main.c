@@ -34,6 +34,9 @@ int main(int ac, char **av)
         write(2, "validate_ident(): failed.", 25);
         goto _err;
     }
+<<<<<<<<< Temporary merge branch 1
+    elf_exploit(sf, x32);
+=========
 
     
     char *key = calloc(KEY_LENGTH / 8, 1);
@@ -41,8 +44,10 @@ int main(int ac, char **av)
 
     // segv
     printf("the key is:");
-    for (int i = 0; i < KEY_LENGTH / 8; i++) {
-        if (i % 8 == 0) {
+    for (int i = 0; i < KEY_LENGTH / 8; i++)
+    {
+        if (i % 8 == 0)
+        {
             printf("\n");
         }
         printf("0x%02x ", (char)key[i] & 0xff);
@@ -53,33 +58,37 @@ int main(int ac, char **av)
     const int text_len = strlen(text);
 
     printf("original text is:");
-    for (int i = 0; i < text_len; i++) {
-        if (i % 8 == 0) {
+    for (int i = 0; i < text_len; i++)
+    {
+        if (i % 8 == 0)
+        {
             printf("\n");
         }
         printf("0x%02x ", (char)text[i] & 0xff);
     }
     printf("\n\n");
 
-
     char *cipher = calloc(text_len, 1);
     encrypt(text, text_len, key, KEY_LENGTH / 8, cipher);
 
     printf("encrypted text is:");
-    for (int i = 0; i < text_len; i++) {
-        if (i % 8 == 0) {
+    for (int i = 0; i < text_len; i++)
+    {
+        if (i % 8 == 0)
+        {
             printf("\n");
         }
         printf("0x%02x ", (char)cipher[i] & 0xff);
     }
     printf("\n\n");
-
 
     get_unpacker(0, key, cipher, KEY_LENGTH / 8, text_len, 1);
 
     printf("decrypted text is:");
-    for (int i = 0; i < text_len; i++) {
-        if (i % 8 == 0) {
+    for (int i = 0; i < text_len; i++)
+    {
+        if (i % 8 == 0)
+        {
             printf("\n");
         }
         printf("0x%02x ", (char)cipher[i] & 0xff);
@@ -87,7 +96,7 @@ int main(int ac, char **av)
     printf("\n\n");
 
 
-    elf_exploit(sf, x32);
+>>>>>>>>> Temporary merge branch 2
 
 _err:
     sfclose(sf);

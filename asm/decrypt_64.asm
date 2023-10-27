@@ -119,7 +119,7 @@ decrypt_64:
 _end:
 
     leave
-    jmp [old_start]
+    jmp [rel old_start]
     ;ret
 
 ; data

@@ -1,5 +1,5 @@
 #ifndef UNPACKER_H
-# define UNPACKER_H
+#define UNPACKER_H
 
 #include <stdint.h>
 #include <stdbool.h>
@@ -11,7 +11,7 @@
 #define DOUBLE_WORD 4
 #define QUAD_WORD 8
 
-#define OLD_START_REVERSE_OFFSET_64 62
+#define OLD_START_REVERSE_OFFSET_64 64
 #define TEXT_ADDR_REVERSE_OFFSET_64 56
 #define TEXT_LEN_REVERSE_OFFSET_64 48
 #define KEY_LEN_REVERSE_OFFSET_64 40
@@ -24,7 +24,7 @@
 #define KEY_ADDR_REVERSE_OFFSET_32 32
 
 #ifndef KEY_LENGTH
-# define KEY_LENGTH 128 // in bits
+#define KEY_LENGTH 128 // in bits
 #endif
 
 /**
@@ -46,11 +46,11 @@
  * @warning The caller is responsible for freeing the memory allocated for the unpacker.
  */
 uint8_t *
-get_unpacker (  const void *,
-                const void *,
-                const void *,
-                const uint64_t,
-                const uint64_t,
-                const bool );
+get_unpacker(const void *,
+             const void *,
+             const void *,
+             const uint64_t,
+             const uint64_t,
+             const bool);
 
 #endif
