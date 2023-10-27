@@ -50,30 +50,39 @@ get_unpacker (  const void * old_start,
 
     } else {
 
-        unpacker = calloc(1, UNPACKER_SIZE_32 + 100);
-        if (unpacker == NULL) {
-            return (NULL);
-        }
+        // unpacker = calloc(1, UNPACKER_SIZE_32 + 100);
+        // if (unpacker == NULL) {
+        //     return (NULL);
+        // }
+        //
+        // const int size = UNPACKER_SIZE_32;
+        //
+        //
+        // printf("%d\n", size);
+        //
+        // memcpy(unpacker, &decrypt_32, UNPACKER_SIZE_32);
+        // memcpy((unpacker + UNPACKER_SIZE_32) - OLD_START_REVERSE_OFFSET_32, &old_start, DOUBLE_WORD); 
+        // memcpy((unpacker + UNPACKER_SIZE_32) - TEXT_ADDR_REVERSE_OFFSET_32, &text, DOUBLE_WORD); 
+        // memcpy((unpacker + UNPACKER_SIZE_32) - TEXT_LEN_REVERSE_OFFSET_32, &text_len, DOUBLE_WORD); 
+        // memcpy((unpacker + UNPACKER_SIZE_32) - KEY_ADDR_REVERSE_OFFSET_32, &key, DOUBLE_WORD);
+        // memcpy((unpacker + UNPACKER_SIZE_32) - KEY_LEN_REVERSE_OFFSET_32, &key_len, DOUBLE_WORD); 
+        //
+        // for(int i = 0; i < UNPACKER_SIZE_32; i++) {
+        //     if (i > 0 && i % 8 == 0) {
+        //         printf("\n");
+        //     }
+        //     printf("0x%02x ", unpacker[i]);
+        // }
+        // printf("\n");
 
-        const int size = UNPACKER_SIZE_32;
+        memcpy((&decrypt_32 + UNPACKER_SIZE_32) - OLD_START_REVERSE_OFFSET_32, &old_start, DOUBLE_WORD); 
+        memcpy((&decrypt_32 + UNPACKER_SIZE_32) - TEXT_ADDR_REVERSE_OFFSET_32, &text, DOUBLE_WORD); 
+        memcpy((&decrypt_32 + UNPACKER_SIZE_32) - TEXT_LEN_REVERSE_OFFSET_32, &text_len, DOUBLE_WORD); 
+        memcpy((&decrypt_32 + UNPACKER_SIZE_32) - KEY_LEN_REVERSE_OFFSET_32, &key_len, DOUBLE_WORD); 
+        memcpy((&decrypt_32 + UNPACKER_SIZE_32) - KEY_ADDR_REVERSE_OFFSET_32, key, KEY_LENGTH / 8);
 
+        decrypt_32();
 
-        printf("%d\n", size);
-
-        memcpy(unpacker, &decrypt_32, UNPACKER_SIZE_32);
-        memcpy((unpacker + UNPACKER_SIZE_32) - OLD_START_REVERSE_OFFSET_32, &old_start, DOUBLE_WORD); 
-        memcpy((unpacker + UNPACKER_SIZE_32) - TEXT_ADDR_REVERSE_OFFSET_32, &text, DOUBLE_WORD); 
-        memcpy((unpacker + UNPACKER_SIZE_32) - TEXT_LEN_REVERSE_OFFSET_32, &text_len, DOUBLE_WORD); 
-        memcpy((unpacker + UNPACKER_SIZE_32) - KEY_ADDR_REVERSE_OFFSET_32, &key, DOUBLE_WORD);
-        memcpy((unpacker + UNPACKER_SIZE_32) - KEY_LEN_REVERSE_OFFSET_32, &key_len, DOUBLE_WORD); 
-
-        for(int i = 0; i < UNPACKER_SIZE_32; i++) {
-            if (i > 0 && i % 8 == 0) {
-                printf("\n");
-            }
-            printf("0x%02x ", unpacker[i]);
-        }
-        printf("\n");
     }
 
 

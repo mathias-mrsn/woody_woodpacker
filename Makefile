@@ -5,8 +5,8 @@ SRCS	= 	main.c \
 			validate.c \
 			unpacker.c
 
-SRCS_ASM = 	keygen.asm \
-			encrypt.asm \
+SRCS_ASM = 	keygen_64.asm \
+			encrypt_64.asm \
 			decrypt_64.asm \
 			decrypt_32.asm
 
@@ -16,7 +16,7 @@ OBJS_ASM    =  $(addprefix ${OBJDIR}/,${SRCS_ASM:.asm=.o})
 DEPENDS =	$(addprefix ${DEPSDIR}/,${SRCS:.c=.d})
 CC		=	clang
 ASMC    =   nasm
-FLAGS	=	#-g3 -fsanitize=address -Wall -Wextra -Werror -Wimplicit-function-declaration -Wtrigraphs -m64
+FLAGS	=	-g3 -fsanitize=address #-Wall -Wextra -Werror -Wimplicit-function-declaration -Wtrigraphs -m64
 INCS	=	-I ./src -I ./asm
 OBJDIR 	=	.objs
 DEPSDIR =	.deps
@@ -55,11 +55,15 @@ $(OBJDIR)/%.o: ${SRCDIR}/%.c
 $(OBJDIR)/%.o: ${ASMDIR}/%.asm
 	@mkdir -p ${OBJDIR}
 	@printf "%-15s ${_CYAN}${_BOLD}$<${_END}...\n" "Compiling"
-	@${ASMC} -f elf64 $< -o $@
+	@#@if echo $< | grep -q "64"; then \
+		${ASMC} -f elf64 $< -o $@; \
+	# @#else \
+	# @#	${ASMC} -f elf32 $< -o $@; \
+	# @#fi
 
 ${NAME}:	init ${OBJS} ${OBJS_ASM}
 	@printf "%-15s ${_PURPLE}${_BOLD}${NAME}${_END}...\n" "Compiling"
-	@${CC} ${FLAGS} ${INCS} -o ${NAME} ${OBJS} ${OBJS_ASM} -no-pie
+	@${CC} ${FLAGS} ${INCS} -o ${NAME} ${OBJS} ${OBJS_ASM} -no-pie 
 ifeq ($(MAKE_WOODY_WRITABLE), on)
 	@gcc .dev/make_elf_fully_writable.c -o .dev/make_elf_fully_writable 2>/dev/null
 	@./.dev/make_elf_fully_writable ${NAME}
