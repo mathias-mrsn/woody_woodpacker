@@ -17,7 +17,7 @@ decrypt_64:
     sub rsp, S_LEN + 0x10
 
     mov rdx, woody_len
-    mov rsi, woody
+    lea rsi, [rel woody]
     mov rdi, 1
     mov rax, SYS_WRITE
     syscall
@@ -39,10 +39,10 @@ decrypt_64:
     movzx rcx, byte [rsp + r8]
     add r9, rcx
     mov rax, r8
-    mov rcx, [key_len]
+    mov rcx, [rel key_len]
     xor rdx, rdx
     div rcx
-    mov rdi, key
+    lea rdi, [rel key]
     add rdi, rdx 
     movzx rax, byte [rdi]
     add r9, rax
@@ -102,25 +102,25 @@ decrypt_64:
     movzx rax, byte [rsp + rdx]
 
     ; [al = rax ^ text[r10]]
-    mov rdi, [decrypt_addr]
+    mov rdi, [rel decrypt_addr]
     add rdi, r10
     movzx rdx, byte [rdi]
     xor al, dl
     
     ; [cipher[n] = al]
-    mov rdi, [decrypt_addr]
+    mov rdi, [rel decrypt_addr]
     add rdi, r10
     mov [rdi], al
 
     inc r10
-    cmp r10, [decrypt_len]
+    cmp r10, [rel decrypt_len]
     jne .prga
 ;
 _end:
 
     leave
     jmp [old_start]
-    ; ret
+    ;ret
 
 ; data
 woody           db "....WOODY....", 10

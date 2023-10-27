@@ -17,9 +17,9 @@ decrypt_32:
     sub esp, S_LEN + 0x10
 
     mov edx, woody_len
-    mov ecx, woody
-    mov ebx, 1
-    mov al, SYS_WRITE
+    mov esi, woody
+    mov edi, 1
+    mov eax, SYS_WRITE
     int 0x80
 
     ; Initialize S array (S[i] = i)
@@ -32,30 +32,31 @@ decrypt_32:
 
     ; Key Scheduling Algorithm (KSA)
     xor ecx, ecx
-    xor edx, edx
+    xor ebx, ebx
 
     .ksa:
     ; [j = (j + S[i] + key[i % key_len]) % S_LEN]
     movzx eax, byte [esp + ecx]
-    add edx, eax
-    mov ebx, ecx
-    mov esi, key
-    xor edi, edi
-    div esi
-    add edi, ebx
-    movzx eax, byte [edi + key]
-    add edx, eax
+    add ebx, eax
+    mov eax, ecx
+    mov edx, [key_len]
+    xor esi, esi
+    div edx
+    mov edi, key
+    add edi, esi
+    movzx eax, byte [edi]
+    add ebx, eax
 
-    mov eax, edx
+    mov eax, ebx
     xor edx, edx
-    mov ebx, S_LEN
-    div ebx
-    mov edx, edx
+    mov esi, S_LEN
+    div esi
+    mov ebx, edx
 
     ; [swap(S[i], S[j])]
     mov al, [esp + ecx]
-    mov cl, [esp + edx]
-    mov [esp + edx], al
+    mov cl, [esp + ebx]
+    mov [esp + ebx], al
     mov [esp + ecx], cl
 
     inc ecx
@@ -64,71 +65,70 @@ decrypt_32:
 
     ; Pseudo-random generation algorithm (PRGA)
     xor ecx, ecx
-    xor edx, edx
     xor ebx, ebx
-
+    xor esi, esi
     .prga:
     ; [i = (i + 1) % S_LEN]
     inc ecx
     mov eax, ecx
-    mov esi, S_LEN
-    xor edi, edi
-    div esi
-    mov ecx, edi
+    mov edx, S_LEN
+    xor ebx, ebx
+    div edx
+    mov ecx, ebx
 
     ; [j = (j + S[i]) % N]
-    movzx edi, byte [esp + ecx]
-    add edx, edi
-    mov eax, edx
-    mov esi, S_LEN
-    xor edi, edi
-    div esi
-    mov edx, edi
+    movzx edx, byte [esp + ecx]
+    add ebx, edx
+    mov eax, ebx
+    mov edx, S_LEN
+    xor esi, esi
+    div edx
+    mov ebx, edx
 
-    ; [swap(S[%ecx], S[%edx])]
+    ; [swap(S[%ecx], S[%ebx])]
     mov al, [esp + ecx]
-    mov cl, [esp + edx]
-    mov [esp + edx], al
+    mov cl, [esp + ebx]
+    mov [esp + ebx], al
     mov [esp + ecx], cl
 
-    ; [int %eax = S[(S[%ecx] + S[%edx]) % S_LEN]]
+    ; [int %eax = S[(S[%ecx] + S[%ebx]) % S_LEN]]
     movzx eax, byte [esp + ecx]
-    movzx edi, byte [esp + edx]
+    movzx edi, byte [esp + ebx]
     add eax, edi
-    mov esi, S_LEN
-    xor edx, edx
-    div esi
+    mov edx, S_LEN
+    xor esi, esi
+    div edx
     movzx eax, byte [esp + edx]
 
-    ; [al = eax ^ text[ebx]]
-    mov edi, decrypt_addr
-    add edi, ebx
-    movzx edi, byte [edi]
+    ; [al = eax ^ text[esi]]
+    mov edi, [decrypt_addr]
+    add edi, esi
+    movzx edx, byte [edi]
     xor al, dl
-
+    
     ; [cipher[n] = al]
-    mov edi, decrypt_addr
-    add edi, ebx
+    mov edi, [decrypt_addr]
+    add edi, esi
     mov [edi], al
 
-    inc ebx
-    cmp ebx, decrypt_len
+    inc esi
+    cmp esi, [decrypt_len]
     jne .prga
 
 _end:
 
-    ; jmp old_start
     leave
-    mov al, SYS_EXIT
-    int 0x80
+    ;jmp [old_start]
+    ret
 
 ; data
-woody           db "....WOODY...."
+woody           db "....WOODY....", 10
 woody_len       equ $-woody
 
 old_start       dd 0x00000000
 decrypt_addr    dd 0x00000000
 decrypt_len     dd 0x00000000
-key             dd 0x00000000
 key_len         dd 0x00000000
+key             times 32 db 0x0
 decrypt_32_end:
+
