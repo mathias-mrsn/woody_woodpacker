@@ -20,7 +20,7 @@ DEPENDS =	$(addprefix ${DEPSDIR}/,${SRCS:.c=.d})
 CC		=	clang
 #ASMC    =   /mnt/nfs/homes/xchalle/nasm-2.16.01/nasm
 ASMC    =   nasm
-FLAGS	=	-g3 -fsanitize=address #-Wall -Wextra -Werror -Wimplicit-function-declaration -Wtrigraphs -m64
+FLAGS	=	#-g3 -fsanitize=address -Wall -Wextra -Werror -Wimplicit-function-declaration -Wtrigraphs -m64
 INCS	=	-I ./src -I ./asm
 OBJDIR 	=	.objs
 DEPSDIR =	.deps

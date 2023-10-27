@@ -34,11 +34,7 @@ int main(int ac, char **av)
         write(2, "validate_ident(): failed.", 25);
         goto _err;
     }
-<<<<<<<<< Temporary merge branch 1
-    elf_exploit(sf, x32);
-=========
 
-    
     char *key = calloc(KEY_LENGTH / 8, 1);
     keygen(KEY_LENGTH / 8, key);
 
@@ -96,7 +92,7 @@ int main(int ac, char **av)
     printf("\n\n");
 
 
->>>>>>>>> Temporary merge branch 2
+    elf_exploit(sf);
 
 _err:
     sfclose(sf);

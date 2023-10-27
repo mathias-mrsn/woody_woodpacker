@@ -119,6 +119,12 @@ decrypt_64:
 _end:
 
     leave
+    xor r10, r10
+    xor r9, r9
+    xor r8, r8
+    xor rdi, rdi
+    xor rdx, rdx
+    xor rax, rax
     jmp [rel old_start]
     ;ret
 
