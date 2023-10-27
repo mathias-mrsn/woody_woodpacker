@@ -12,6 +12,13 @@
   %endrep
 %endmacro    
 
+%macro cleanx 1-*
+ %rep %0
+   xor %1, %1
+   %rotate 1
+ %endrep
+%endmacro
+
 %define SYS_READ 0
 %define SYS_WRITE 1
 %define SYS_OPEN 2
