@@ -11,16 +11,19 @@ section .text
 
 decrypt_32:
 
-    ; Initialize _start function
+    ; Initialize decrypt_32 function
     push ebp
     mov ebp, esp
     sub esp, S_LEN + 0x10
 
-    mov edx, woody_len
-    lea esi, [rel woody]
-    mov edi, 1
+    call get_fixed_addr
+    add edx, woody - reference
+    mov ecx, edx
+    mov ebx, 1
     mov eax, SYS_WRITE
+    mov edx, woody_len
     int 0x80
+
 
     ; Initialize S array (S[i] = i)
     xor ecx, ecx
@@ -39,13 +42,20 @@ decrypt_32:
     mov al, [esp + ecx]
     add bl, al
     mov eax, ecx
-    mov ecx, [rel key_len]
+    call get_fixed_addr
+    add edx, key_len - reference
+    mov ecx, [edx]
+    call get_fixed_addr
+    add edx, key - reference
+    mov edi, edx
     xor edx, edx
     div ecx
-    lea edi, [rel key]
     add edi, edx 
     mov al, [edi]
     add bl, al
+
+    mov eax, SYS_EXIT
+    int 0x80
 
     mov eax, ebx
     xor edx, edx
@@ -102,38 +112,52 @@ decrypt_32:
     mov al, [esp + edx]
 
     ; [al = eax ^ text[ebx]]
-    lea edi, [rel decrypt_addr]
+    call get_fixed_addr
+    add edx, decrypt_addr - reference
+    mov edi, edx
     add edi, ebx
     mov dl, [edi]
     xor al, dl
-    
+
     ; [cipher[n] = al]
-    lea edi, [rel decrypt_addr]
+    call get_fixed_addr
+    add edx, decrypt_addr - reference
+    mov edi, edx
     add edi, ebx
     mov [edi], al
 
     inc ebx
-    cmp ebx, [rel decrypt_len]
+    call get_fixed_addr
+    add edx, decrypt_len - reference
+    cmp ebx, [edx]
     jne .prga
-;
+
 _end:
 
     leave
     xor ebx, ebx
     xor edi, edi
     xor ecx, ecx
+
+    call get_fixed_addr
+    add edx, old_start - reference
+    mov eax, edx
     xor edx, edx
-    xor eax, eax
     jmp [rel old_start]
+
+get_fixed_addr:
+    call reference
+reference:
+    pop edx
+    ret
 
 ; data
 woody           db "....WOODY....", 10
 woody_len       equ $-woody
 
-old_start       dd 0x00000000
-decrypt_addr    dd 0x00000000
-decrypt_len     dd 0x00000000
-key_len         dd 0x00000000
+old_start       dd 0x11111111
+decrypt_addr    dd 0x22222222
+decrypt_len     dd 0x33333333
+key_len         dd 0x44444444
 key             times 32 db 0x0
 decrypt_32_end:
-

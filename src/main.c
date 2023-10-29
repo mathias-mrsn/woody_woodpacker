@@ -78,7 +78,7 @@ int main(int ac, char **av)
     }
     printf("\n\n");
 
-    get_unpacker(0, key, cipher, KEY_LENGTH / 8, text_len, 1);
+    get_unpacker(0, key, cipher, KEY_LENGTH / 8, text_len, 0);
 
     printf("decrypted text is:");
     for (int i = 0; i < text_len; i++)

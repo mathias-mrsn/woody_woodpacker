@@ -6,7 +6,7 @@
 
 #define UNPACKER_SIZE_64 (&decrypt_64_end - &decrypt_64)
 
-#define UNPACKER_SIZE_32 (&decrypt_32_end - &decrypt_32)
+#define UNPACKER_SIZE_32 339
 
 #define DOUBLE_WORD 4
 #define QUAD_WORD 8
@@ -17,14 +17,14 @@
 #define KEY_LEN_REVERSE_OFFSET_64 40
 #define KEY_ADDR_REVERSE_OFFSET_64 32
 
-#define OLD_START_REVERSE_OFFSET_32 62
-#define TEXT_ADDR_REVERSE_OFFSET_32 56
-#define TEXT_LEN_REVERSE_OFFSET_32 48
-#define KEY_LEN_REVERSE_OFFSET_32 40
+#define OLD_START_REVERSE_OFFSET_32 48
+#define TEXT_ADDR_REVERSE_OFFSET_32 44
+#define TEXT_LEN_REVERSE_OFFSET_32 40
+#define KEY_LEN_REVERSE_OFFSET_32 36
 #define KEY_ADDR_REVERSE_OFFSET_32 32
 
 #ifndef KEY_LENGTH
-#define KEY_LENGTH 128 // in bits
+# define KEY_LENGTH 128 // in bits
 #endif
 
 /**
