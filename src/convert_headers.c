@@ -1,4 +1,4 @@
-#include "convert_headers.h"
+#include "exploit.h"
 
 ELF32_FORMAT *convert64_32(ELF64_FORMAT *src)
 {
@@ -52,10 +52,15 @@ ELF64_FORMAT *convert32_64(const ELF32_FORMAT *src)
 {
     printf("filesz = %u\n", src->p_h[3].p_filesz);
     ELF64_FORMAT *dest;
-    dest = malloc(sizeof(ELF64_FORMAT));
-    dest->e_h = malloc(sizeof(Elf64_Ehdr));
-    dest->p_h = malloc(sizeof(Elf64_Phdr) * src->e_h->e_phnum);
-    dest->s_h = malloc(sizeof(Elf64_Shdr) * src->e_h->e_shnum);
+    if (!(dest = malloc(sizeof(ELF64_FORMAT))))
+        return NULL;
+    if (!(dest->e_h = malloc(sizeof(Elf64_Ehdr))))
+        return free_elf64_struct(dest);
+    return free_elf64_struct(dest);
+    if (!(dest->p_h = malloc(sizeof(Elf64_Phdr) * src->e_h->e_phnum)))
+        return free_elf64_struct(dest);
+    if (!(dest->s_h = malloc(sizeof(Elf64_Shdr) * src->e_h->e_shnum)))
+        return free_elf64_struct(dest);
     (dest->e_h)->e_ehsize = (src->e_h)->e_ehsize;
     (dest->e_h)->e_entry = (src->e_h)->e_entry;
     (dest->e_h)->e_flags = (src->e_h)->e_flags;

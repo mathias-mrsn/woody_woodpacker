@@ -34,7 +34,7 @@ int main(int ac, char **av)
         write(2, "validate_ident(): failed.", 25);
         goto _err;
     }
-
+    /*
     char *key = calloc(KEY_LENGTH / 8, 1);
     keygen(KEY_LENGTH / 8, key);
 
@@ -90,9 +90,10 @@ int main(int ac, char **av)
         printf("0x%02x ", (char)cipher[i] & 0xff);
     }
     printf("\n\n");
+    */
 
-
-    elf_exploit(sf);
+    if (elf_exploit(sf))
+        goto _err;
 
 _err:
     sfclose(sf);
