@@ -3,10 +3,14 @@
 ELF32_FORMAT *convert64_32(ELF64_FORMAT *src)
 {
     ELF32_FORMAT *dest;
-    dest = malloc(sizeof(ELF32_FORMAT));
-    dest->e_h = malloc(sizeof(Elf32_Ehdr));
-    dest->p_h = malloc(sizeof(Elf32_Phdr) * src->e_h->e_phnum);
-    dest->s_h = malloc(sizeof(Elf32_Shdr) * src->e_h->e_shnum);
+    if (!(dest = xmalloc(sizeof(ELF32_FORMAT))))
+        return NULL;
+    if (!(dest->e_h = xmalloc(sizeof(Elf32_Ehdr))))
+        return free_elf32_struct(dest);
+    if (!(dest->p_h = xmalloc(sizeof(Elf32_Phdr) * src->e_h->e_phnum)))
+        return free_elf32_struct(dest);
+    if (!(dest->s_h = xmalloc(sizeof(Elf32_Shdr) * src->e_h->e_shnum)))
+        return free_elf32_struct(dest);
     (dest->e_h)->e_ehsize = (src->e_h)->e_ehsize;
     (dest->e_h)->e_entry = (src->e_h)->e_entry;
     (dest->e_h)->e_flags = (src->e_h)->e_flags;
@@ -52,14 +56,13 @@ ELF64_FORMAT *convert32_64(const ELF32_FORMAT *src)
 {
     printf("filesz = %u\n", src->p_h[3].p_filesz);
     ELF64_FORMAT *dest;
-    if (!(dest = malloc(sizeof(ELF64_FORMAT))))
+    if (!(dest = xmalloc(sizeof(ELF64_FORMAT))))
         return NULL;
-    if (!(dest->e_h = malloc(sizeof(Elf64_Ehdr))))
+    if (!(dest->e_h = xmalloc(sizeof(Elf64_Ehdr))))
         return free_elf64_struct(dest);
-    return free_elf64_struct(dest);
-    if (!(dest->p_h = malloc(sizeof(Elf64_Phdr) * src->e_h->e_phnum)))
+    if (!(dest->p_h = xmalloc(sizeof(Elf64_Phdr) * src->e_h->e_phnum)))
         return free_elf64_struct(dest);
-    if (!(dest->s_h = malloc(sizeof(Elf64_Shdr) * src->e_h->e_shnum)))
+    if (!(dest->s_h = xmalloc(sizeof(Elf64_Shdr) * src->e_h->e_shnum)))
         return free_elf64_struct(dest);
     (dest->e_h)->e_ehsize = (src->e_h)->e_ehsize;
     (dest->e_h)->e_entry = (src->e_h)->e_entry;
