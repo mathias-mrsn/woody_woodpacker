@@ -1,5 +1,28 @@
 #include "exploit.h"
 
+/**
+ * @param type type of the source
+ */
+void ph_cpy(void *dest, void *p_h, int src_format, int dest_format)
+{
+    if (src_format == ELFCLASS32)
+    {
+        (Elf32_Phdr *)p_h;
+
+        for (int i = 0; i < (dest->e_h)->e_phnum; i++)
+        {
+            dest->p_h[i].p_align = p_h[i].p_align;
+            dest->p_h[i].p_filesz = p_h[i].p_filesz;
+            dest->p_h[i].p_flags = p_h[i].p_flags;
+            dest->p_h[i].p_memsz = p_h[i].p_memsz;
+            dest->p_h[i].p_offset = p_h[i].p_offset;
+            dest->p_h[i].p_paddr = p_h[i].p_paddr;
+            dest->p_h[i].p_type = p_h[i].p_type;
+            dest->p_h[i].p_vaddr = p_h[i].p_vaddr;
+        }
+    }
+}
+
 ELF32_FORMAT *convert64_32(ELF64_FORMAT *src)
 {
     ELF32_FORMAT *dest;
@@ -26,6 +49,8 @@ ELF32_FORMAT *convert64_32(ELF64_FORMAT *src)
     (dest->e_h)->e_shstrndx = (src->e_h)->e_shstrndx;
     (dest->e_h)->e_type = (src->e_h)->e_type;
     (dest->e_h)->e_version = (src->e_h)->e_version;
+    ph_cpy(dest, src->p_h);
+    display_header_data32(dest->e_h, dest->p_h, dest->s_h);
     for (int i = 0; i < (dest->e_h)->e_phnum; i++)
     {
         dest->p_h[i].p_align = src->p_h[i].p_align;
