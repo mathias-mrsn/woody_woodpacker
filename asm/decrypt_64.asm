@@ -101,16 +101,25 @@ decrypt_64:
     div ecx
     movzx rax, byte [rsp + rdx]
 
+    xor rsi, rsi
+    xor rdi, rdi
+
     ; [al = rax ^ text[r10]]
-    mov rdi, [rel decrypt_addr]
-    add rdi, r10
-    movzx rdx, byte [rdi]
+    mov rdi, [rel current_start]
+    sub rdi, [rel decrypt_addr]
+    lea rsi, [rel decrypt_64]
+    sub rsi, rdi
+    add rsi, r10
+    movzx rdx, byte [rsi]
     xor al, dl
     
     ; [cipher[n] = al]
-    mov rdi, [rel decrypt_addr]
-    add rdi, r10
-    mov [rdi], al
+    mov rdi, [rel current_start]
+    sub rdi, [rel decrypt_addr]
+    lea rsi, [rel decrypt_64]
+    sub rsi, rdi
+    add rsi, r10
+    mov [rsi], al
 
     inc r10
     cmp r10, [rel decrypt_len]
