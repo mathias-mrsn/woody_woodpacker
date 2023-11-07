@@ -122,16 +122,21 @@ _end:
     xor r10, r10
     xor r9, r9
     xor r8, r8
-    xor rdi, rdi
     xor rdx, rdx
     xor rax, rax
-    jmp [rel old_start]
+    mov rdi, [rel current_start]
+    sub rdi, [rel old_start]
+    lea rsi, [rel decrypt_64]
+    sub rsi, rdi
+    xor rdi, rdi
+    jmp rsi
     ;ret
 
 ; data
 woody           db "....WOODY....", 10
 woody_len       equ $-woody
 
+current_start   dq 0x0000000000000000
 old_start       dq 0x0000000000000000
 decrypt_addr    dq 0x0000000000000000
 decrypt_len     dq 0x0000000000000000

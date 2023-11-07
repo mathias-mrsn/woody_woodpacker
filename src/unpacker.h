@@ -24,7 +24,7 @@
 #define KEY_ADDR_REVERSE_OFFSET_32 32
 
 #ifndef KEY_LENGTH
-# define KEY_LENGTH 128 // in bits
+#define KEY_LENGTH 128 // in bits
 #endif
 
 /**
@@ -47,6 +47,7 @@
  */
 uint8_t *
 get_unpacker(const void *,
+             const void *,
              const void *,
              const void *,
              const uint64_t,
