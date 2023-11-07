@@ -1,5 +1,17 @@
 #include "exploit.h"
 
+int free_exploit(ELF64_FORMAT *elf, EXPLOIT_INFO *info, void *buf, ELF32_FORMAT *elf32)
+{
+    free_elf64_struct(elf);
+    free_exploit_info(info);
+    free_elf32_struct(elf32);
+    if (buf != NULL)
+    {
+        free(buf);
+    }
+    return EXIT_FAILURE;
+}
+
 void *free_exploit_info(EXPLOIT_INFO *info)
 {
     if (info != NULL)

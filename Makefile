@@ -1,4 +1,4 @@
-NAME	:=	woody
+NAME	:=	woody_woodpacker
 
 SRCS	= 	main.c \
 			stored_file.c \
