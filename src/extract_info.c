@@ -2,11 +2,8 @@
 
 bool code_cave_available(EXPLOIT_INFO *info, ELF64_FORMAT *elf)
 {
-    Elf64_Addr end_explt_p = info->explt_p->p_vaddr + info->explt_p->p_memsz;
-    if (info->e_p_idx + 1 >= elf->e_h->e_phnum)
-        return false;
-    Elf64_Addr start_next_p = elf->p_h[info->e_p_idx].p_vaddr;
-    if ((start_next_p - end_explt_p) >= (info->bin_arch == ELFCLASS64) ? UNPACKER_SIZE_64 : UNPACKER_SIZE_32)
+    Elf64_Addr memsz_align = info->explt_p->p_memsz % 0x1000;
+    if ((memsz_align + ((info->bin_arch == ELFCLASS64) ? UNPACKER_SIZE_64 : UNPACKER_SIZE_32) < 1000))
         return true;
     return false;
 }
