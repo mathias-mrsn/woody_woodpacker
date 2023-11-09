@@ -92,7 +92,7 @@ int main(int ac, char **av)
     printf("\n\n");
     */
 
-    if (elf_exploit(sf))
+    if (exploit(sf))
         goto _err;
 
 _err:

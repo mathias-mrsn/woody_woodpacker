@@ -7,6 +7,8 @@ SRCS	= 	main.c \
 			free.c \
 			convert_headers.c \
 			exploit.c \
+			exploit_note.c \
+			extract_info.c \
 			unpacker.c
 
 SRCS_ASM = 	keygen_64.asm \
