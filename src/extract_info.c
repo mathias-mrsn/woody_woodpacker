@@ -11,13 +11,11 @@ EXPLOIT_INFO_NOTE get_note_info(const STORED_FILE *sf, const ELF64_FORMAT *elf, 
 {
     EXPLOIT_INFO_NOTE tmp;
     tmp.max_addr = tmp.max_memsz = 0;
+    tmp.n_p_idx = -1;
     for (int i = (elf->e_h->e_phnum) - 1; i > 0; i--)
     {
-        printf("type[%d] = %d\n", i, elf->p_h[i].p_type);
         if (elf->p_h[i].p_type == PT_NOTE)
         {
-
-            printf("%d\n", i);
             tmp.n_p_idx = i;
             break;
         }

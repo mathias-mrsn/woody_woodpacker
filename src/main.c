@@ -32,7 +32,7 @@ int main(int ac, char **av)
 
     // write(1, cipher, 14);
 
-    sf_display_data(sf);
+    //sf_display_data(sf);
     if (validate_ident(sf) == ERROR)
     {
         write(2, "validate_ident(): failed.", 25);
