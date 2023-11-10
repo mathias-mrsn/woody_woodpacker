@@ -6,7 +6,7 @@
 
 #define UNPACKER_SIZE_64 (&decrypt_64_end - &decrypt_64)
 
-#define UNPACKER_SIZE_32 339
+#define UNPACKER_SIZE_32 0x1a0
 
 #define DOUBLE_WORD 4
 #define QUAD_WORD 8

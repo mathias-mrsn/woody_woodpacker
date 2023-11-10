@@ -113,7 +113,14 @@ decrypt_32:
 
     ; [al = eax ^ text[ebx]]
     call get_fixed_addr
+    add edx, current_start - reference
+    mov esi, edx
+    call get_fixed_addr
     add edx, decrypt_addr - reference
+    sub esi, edx
+    call get_fixed_addr
+    add edx, decrypt_32 - reference
+    sub edx, esi
     mov edi, edx
     add edi, ebx
     mov dl, [edi]
@@ -121,7 +128,14 @@ decrypt_32:
 
     ; [cipher[n] = al]
     call get_fixed_addr
+    add edx, current_start - reference
+    mov esi, edx
+    call get_fixed_addr
     add edx, decrypt_addr - reference
+    sub esi, edx
+    call get_fixed_addr
+    add edx, decrypt_32 - reference
+    sub edx, esi
     mov edi, edx
     add edi, ebx
     mov [edi], al
@@ -140,10 +154,17 @@ _end:
     xor ecx, ecx
 
     call get_fixed_addr
+    add edx, current_start - reference
+    mov esi, edx
+    call get_fixed_addr
     add edx, old_start - reference
-    mov eax, edx
-    xor edx, edx
-    jmp [rel old_start]
+    sub esi, edx
+    call get_fixed_addr
+    add edx, decrypt_32 - reference
+    sub edx, esi
+    xor esi, esi
+    jmp edx
+
 
 get_fixed_addr:
     call reference
@@ -155,9 +176,10 @@ reference:
 woody           db "....WOODY....", 10
 woody_len       equ $-woody
 
-old_start       dd 0x11111111
-decrypt_addr    dd 0x22222222
-decrypt_len     dd 0x33333333
-key_len         dd 0x44444444
+current_start   dd 0x00000000
+old_start       dd 0x00000000
+decrypt_addr    dd 0x00000000
+decrypt_len     dd 0x00000000
+key_len         dd 0x00000000
 key             times 32 db 0x0
 decrypt_32_end:
