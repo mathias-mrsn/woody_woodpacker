@@ -20,6 +20,10 @@ int main(int ac, char **av)
     }
 
     STORED_FILE *sf = sfopen(av[1], SF_READ);
+    if (sf == NULL)
+    {
+        return (1);
+    }
 
     // char text[] = "This is a text";
     // char key[] = "hdoyyfduishnckcxknbgbvhhdskjyteriow4321uiyrfuei3^*fyudsia^-3i^3usiao^&3*asy4*&3say43-21=8-9_sa";
