@@ -1,5 +1,40 @@
 #include "exploit.h"
 
+/**
+ *@brief - Check in the dynamics sections if FLAGS_1
+ *          is set to 0x800000.
+ *          Meaning that the ELF is a dynamic lib
+ * @param STORED_FILE structure.
+ * @param ELF64_FORMAT structure.
+ * @return   1 if the flag has been found.
+ *           0 otherwise.
+ */
+bool check_dyn_lib(const STORED_FILE *sf, ELF64_FORMAT *elf)
+{
+    Elf64_Off sh_offset;
+    Elf64_Xword sh_size;
+    for (int idx = 0; idx < elf->e_h->e_shnum; idx++)
+    {
+        if (elf->s_h[idx].sh_type != SHT_DYNAMIC)
+            continue;
+        sh_size = elf->s_h[idx].sh_size;
+        if (sh_size == 0)
+            continue;
+        sh_offset = elf->s_h[idx].sh_offset;
+        for (int inc = 0; inc < sh_size; inc += 16)
+        {
+            int *flag = (int *)(sf->ptr + sh_offset + inc);
+            if (*flag == DT_FLAGS_1)
+            {
+                int *bitand = (int *)(sf->ptr + sh_offset + inc + 8);
+                if ((*bitand&0x08000000) == 0)
+                    return true;
+            }
+        }
+    }
+    return false;
+}
+
 bool code_cave_available(EXPLOIT_INFO *info, ELF64_FORMAT *elf)
 {
     Elf64_Addr memsz_align = info->explt_p->p_memsz % 0x1000;
@@ -25,7 +60,7 @@ EXPLOIT_INFO_NOTE get_note_info(const STORED_FILE *sf, const ELF64_FORMAT *elf, 
         if (elf->p_h[i].p_vaddr > tmp.max_addr)
         {
             tmp.max_addr = elf->p_h[i].p_vaddr;
-            tmp.max_memsz = elf->p_h[i].p_offset;
+            tmp.max_memsz = elf->p_h[i].p_memsz;
         }
     }
     tmp.note_vaddr = tmp.max_addr + tmp.max_memsz + (0x1000 - ((tmp.max_addr + tmp.max_memsz) % 0x1000));
