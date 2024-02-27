@@ -57,13 +57,12 @@ EXPLOIT_INFO_NOTE get_note_info(const STORED_FILE *sf, const ELF64_FORMAT *elf, 
     }
     for (int i = (elf->e_h->e_phnum) - 1; i > 0; i--)
     {
-        if (elf->p_h[i].p_vaddr > tmp.max_addr)
+        if (elf->p_h[i].p_vaddr + elf->p_h[i].p_memsz > tmp.max_addr)
         {
-            tmp.max_addr = elf->p_h[i].p_vaddr;
-            tmp.max_memsz = elf->p_h[i].p_memsz;
+            tmp.max_addr = elf->p_h[i].p_vaddr + elf->p_h[i].p_memsz;
         }
     }
-    tmp.note_vaddr = tmp.max_addr + tmp.max_memsz + (0x1000 - ((tmp.max_addr + tmp.max_memsz) % 0x1000));
+    tmp.note_vaddr = tmp.max_addr + (0x1000 - ((tmp.max_addr) % 0x1000));
     return tmp;
 }
 
